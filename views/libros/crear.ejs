@@ -1,0 +1,16 @@
+<%- include ../layouts/header.ejs%>
+<br/>
+<form method="post" action="/libros" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="my-input">Nombre:</label>
+        <input id="my-input" class="form-control" type="text" name="nombre">
+    </div>
+
+    <div class="form-group">
+        <label for="my-input">Imagen</label>
+        <input id="my-input" class="form-control-file" type="file" name="archivo">
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+</form>
+<%- include ../layouts/footer.ejs%>

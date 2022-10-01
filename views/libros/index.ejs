@@ -1,32 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <title>Document</title>
-</head>
-<body>
-    <table class="table table-light">
-        <thead class="thead-light">
-            <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Imagen</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for( let libro = 0; libro < libros.length; libro++ ) { %>
+<%- include ../layouts/header.ejs%>
+        <br/>
+        <br/>
+        <a href="/libros/crear" class="btn btn-primary" type="button">Crear nuevo libro</a>
+        <br/>
+        <br/>
+        <table class="table table-light">
+            <thead class="thead-light">
                 <tr>
-                    <td> <%=libros[libro].id%> </td>
-                    <td> <%=libros[libro].nombre%> </td>
-                    <td> <%=libros[libro].imagen%> </td>
-                    <td> Editar | Borrar </td>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Imagen</th>
+                    <th>Acciones</th>
                 </tr>
-            <% } %>
-        </tbody>
-    </table>
-</body>
-</html>
+            </thead>
+            <tbody>
+                <% for( let libro = 0; libro < libros.length; libro++ ) { %>
+                    <tr>
+                        <td> <%=libros[libro].id%> </td>
+                        <td> <%=libros[libro].nombre%> </td>
+                        <td>
+                            <img class="img-thumbnail" width="100" src="images/<%=libros[libro].imagen%>" alt="">  
+                        </td>
+                        <td>
+                            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                <form class="form-inline" method="post" action="/libros/editar/<%=libros[libro].id%>">
+                                    <button class="btn btn-warning" type="submit">Editar</button>
+                                </form>
+                            </div>
+
+                            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                <form class="form-inline" method="post" action="/libros/eliminar/<%=libros[libro].id%>">
+                                    <button class="btn btn-danger" type="submit">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+<%- include ../layouts/footer.ejs%>
