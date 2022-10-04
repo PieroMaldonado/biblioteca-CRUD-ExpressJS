@@ -1,11 +1,12 @@
 var conexion = require('../config/conexion.js');
 var libro = require('../model/libro');
 var borrar = require("fs");
+const { validationResult } = require('express-validator');
 
 module.exports={
     index:function (req,res){
         libro.obtener(conexion, function(err,datos){
-            console.log(datos);
+            //console.log(datos);
             res.render('libros/index', {title: 'Aplicación', libros: datos });
         });
     },
@@ -13,8 +14,17 @@ module.exports={
         res.render('libros/crear');
     },
     guardar:function (req,res){
-        console.log(req.body);
-        console.log(req.file.filename);
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            errors.array().forEach(error => {
+                req.flash('error', error.msg)
+            });
+            res.render('libros/crear', {messages: req.flash()});
+            return;
+        }
+        if (!req.file) {
+            return res.status(422).json({ message: 'Please add an image!' });
+        }        
         libro.insertar(conexion, req.body, req.file, function(err){
             res.redirect('/libros');
         });
@@ -34,12 +44,11 @@ module.exports={
     },
     editar:function(req,res){
         libro.retornarDatosID(conexion,req.params.id,function(err,registros){
-            console.log(registros[0]);
+            //console.log(registros[0]);
             res.render('libros/editar', {libro:registros[0]});
         });
     },
     actualizar:function(req,res){
-        console.log(req.body.nombre);
         if(req.file){
             if(req.file.filename){
                 libro.retornarDatosID(conexion, req.body.id, function(err,registros){
@@ -48,11 +57,14 @@ module.exports={
                         borrar.unlinkSync(nombreImagen);
                     }
                     libro.actualizarArchivo(conexion, req.body, req.file, function(err){
-
                     });
                 });
             }
+        }else{
+            if(req.file){
+            return res.status(422).json({ message: 'Please add an image!' });}
         }
+
         if(req.body.nombre){
             libro.actualizar(conexion, req.body, function(err){});
         }
