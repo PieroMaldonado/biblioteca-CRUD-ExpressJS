@@ -4,10 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const cookieSession = require('cookie-session');
+// const bcrypt = require('bcrypt');
+
 const flash = require('connect-flash');
 const session = require('express-session');
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 var usersRouter = require('./routes/users');
 var librosRouter = require('./routes/libros');
 
@@ -23,6 +27,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(bodyParser.urlencoded({ extends: false}));
 app.use(flash());
+// APPLY COOKIE SESSION MIDDLEWARE
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  maxAge:  3600 * 1000 // 1hr
+}));
 app.use(session({
   secret: 'mykey',
   resave: false,
@@ -32,7 +42,8 @@ app.use(session({
 // app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
+app.use('/', authRouter);
 app.use('/users', usersRouter);
 app.use('/libros', librosRouter);
 
